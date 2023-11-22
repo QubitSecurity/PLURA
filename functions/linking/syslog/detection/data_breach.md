@@ -8,36 +8,19 @@
 ## 데이터 유출 메시지 파라미터 정의
 |필드명| 변 수 명                       |  내용                                   |
 |-----|----------------------------|----------------------------------------|
+|_HEADER_ |serviceName                 | 대상 서비스 명 (데이터유출)|
 |_HEADER_ |eventName                   | 메시지 발생 구분 ( 탐지/방어/사용자로그 등)|
 |_HEADER_ |serviceName                 | 대상 서비스 명 (데이터유출)|
+|_HEADER_ |serverIp                    | 대상 시스템 아이피 (에이전트)|
+|_HEADER_ |logUri                      | 요청 경로 (URI)         |
+|_HEADER_ |filterCategoryName          | 필터 카테고리 이름         |
 |_HEADER_ |filterName                  | 필터 이름|
-|_HEADER_ |filterRiskLevel             | 필터 위험도|
-|end|registerDate                | 이벤트 발생시간|
-|cs1|logQuery                  | 요청 쿼리 |
-|cs2|logUri          | 요청 경로 (URI)     |
-|cs3|logReferer                   | REFERER            |
-|cs4|logRequestBody                   | REQUEST-BODY            |
-|cs5|filterCategoryName                   | 필터 카테고리 이름         |
-|Name|filterName                   | 필터 이름         |
-|request|logUri                   | 요청 경로 (URI)         |
-|src|detectIp                    | 공격자 아이피|
-|dvc|serverIp                    | 대상 시스템 아이피 (에이전트)|
-|dst|serverName                  | 대상 시스템 이름 (에이전트)|
-|dhost|logHost                    | 대상 시스템 호스트 (에이전트)|
-|requestMethod|logMethod                   | 요청 Method            |
-|requestCookies|logCookie                   | 요청 Cookie            |
-|requestClientApplication|logUserAgent                   | 사용자 Agent
-|categoryOutcome|logStatus                   | 응답 HTTP STATUS            |
-|requestContext|logRequestContentType                   | 요청 CONTENT-TYPE            |
-|sourceTranslatedAddress|logXForwardedFor               | X-FORWARDED-FOR           |
-|act|                | 'BLOCK' OR 'DETECT'           | |
-|in|logRequestContentLength           | 요청 크기 |
-|out|logRequestContentLength           | 응답 크기 |
-|cs6|logOrigin                   | 전체 로그            |     
+|_HEADER_ |detectIp                    | 공격자 아이피|
+|_HEADER_ |logOrigin                   | 전체 로그            |     
 
 
 ## 샘플로그
 ```
-Jun 16 12:44:15 211.43.190.184 plura.notice: CEF:0|QubitSecurity|Plura|5|(탐지)데이터 유출|데이터 정보 탈취|4|end=Jun 16 2022 12:18:41 cs1=action\=data_management&amp;cpmvc_do_action\=mvparse&amp;f\=datafeed&amp;method\=remove&amp;rruleType\=del_only&amp;calendarId\=1%20AND%20EXTRACTVALUE%286584%2CCONCAT%280x5c%2C0x716a627171%2C%28SELECT%20MID%28%28IFNULL%28CAST%28user_pass%20AS%20NCHAR%29%2C0x20%29%29%2C22%2C21%29%20FROM%20wordpress.wp_users%20ORDER%20BY%20user_pass%29%2C0x717a6a7871%29%29 cs2=/wordpress/index.php cs3=- cs4=- cs5=SQL 인젝션 Name=데이터 정보 탈취 request=/wordpress/index.php src=172.16.20.192 dvc=172.16.12.40 dst=Harry-LP-L dhost=172.16.12.40 requestMethod=GET requestCookies=- requestClientApplication=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36 categoryOutcome= requestContext=- sourceTranslatedAddress=- act=DETECT in=- out=- cs6={\&quot;Host\&quot;:\&quot;172.16.12.40\&quot;,\&quot;User-Agent\&quot;:\&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36\&quot;,\&quot;Remote-addr\&quot;:\&quot;172.16.20.192\&quot;,\&quot;Request-date\&quot;:\&quot;16/Jun/2022:12:43:35.586 +0900\&quot;,\&quot;Method\&quot;:\&quot;GET\&quot;,\&quot;Uri\&quot;:\&quot;/wordpress/index.php\&quot;,\&quot;Request\&quot;:\&quot;GET /wordpress/?action\=data_management&amp;cpmvc_do_action\=mvparse&amp;f\=datafeed&amp;method\=remove&amp;rruleType\=del_only&amp;calendarId\=1%20AND%20EXTRACTVALUE%286584%2CCONCAT%280x5c%2C0x716a627171%2C%28SELECT%20MID%28%28IFNULL%28CAST%28user_pass%20AS%20NCHAR%29%2C0x20%29%29%2C22%2C21%29%20FROM%20wordpress.wp_users%20ORDER%20BY%20user_pass%29%2C0x717a6a7871%29%29 HTTP/1.1\&quot;,\&quot;ModPlura-version\&quot;:\&quot;Apache/5.5.3(2.4)\&quot;,\&quot;Status\&quot;:\&quot;200\&quot;,\&quot;Resp-Content-Length\&quot;:\&quot;75\&quot;}
+Jun 16 02:05:44 www.plura.io Plura 데이터 유출 탐지\n데이터 유출 | 172.16.12.37 | /harry.asp | SQL 인젝션 | QA-POST ATTACK | 172.16.20.192 | {\&quot;Request\&quot;:\&quot;POST /ha rry.asp HTTP/1.1\&quot;,\&quot;Remote-addr\&quot;:\&quot;172.16.20.192\&quot;,\&quot;Request-date\&quot;:\&quot;16/Jun/2022:11:04:56.914 +0900\&quot;,\&quot;Uri\&quot;:\&quot;/har ry.asp\&quot;,\&quot;Method\&quot;:\&quot;POST\&quot;,\&quot;Host\&quot;:\&quot;172.16.12.37\&quot;,\&quot;Referer\&quot;:\&quot;http://172.16.12.37/\&quot;,\&quot;User-Agent\&quo t;:\&quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36\&quot;,\&quot;Req-Content-Type\&quot;:\&quot;application/ x-www-form-urlencoded\&quot;,\&quot;Req-Content-Length\&quot;:\&quot;36\&quot;,\&quot;Post-body\&quot;:\&quot;fname\=1%29+OR+NOT+1502%3D1502--+EXpp\&quot;,\&quot;Status\&quot;:\&q uot;200\&quot;,\&quot;Cache-Control\&quot;:\&quot;private\&quot;,\&quot;Resp-Content-Type\&quot;:\&quot;text/html\&quot;,\&quot;Resp-Content-Length\&quot;:\&quot;59\&quot;,\&quot; Server\&quot;:\&quot;Microsoft-IIS/10.0\&quot;,\&quot;ModPlura-version\&quot;:\&quot;IIS/5.5.3(64)\&quot;}\n
 
 ```

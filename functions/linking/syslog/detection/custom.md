@@ -8,17 +8,17 @@
 ## 사용자 메시지 파라미터 정의
 |필드명| 변 수 명                       |  내용                                   |
 |-----|----------------------------|----------------------------------------|
-|_HEADER_ |eventType                   |  |
 |_HEADER_ |eventName                   | 대상 서비스 명 (사용로그)|
-|_HEADER_ |0                           | 고정|
-|end|registerDate                | 이벤트 발생시간|
-|cs1|userActionCategoryGroupName | 사용로그 이벤트 카테고리 명 |
-|cs2|filterCategoryName          | 사용로그 이벤트 명     |
-|cs5|userName                   | 사용자 명            |     
+|_HEADER_ |serviceName                 | |
+|_HEADER_ |serverIp                    | 대상 시스템 아이피 (에이전트)|
+|_HEADER_ |serverName                  | 대상 시스템 이름 (에이전트)|
+|_HEADER_ |filterName                  | 필터 이름|
+|_HEADER_ |filterCategoryName          | 사용로그 이벤트 명     |
+|_HEADER_ |logOrigin                   | 전체 로그            |     
 
 
 ## 샘플로그
 ```
-Jun 17 11:11:58 211.43.190.184 plura.notice: CEF:0|QubitSecurity|Plura|5||사용로그|0|end=Jun 17 2022 11:11:55 cs1=멤버 cs2=멤버/로그인 cs5=MIKE
+Jun 16 03:38:45 www.plura.io Plura 사용로그\n네트워크 필터 | 네트워크 필터/수정 | Harry(LP) | Configuration 저장\n
 
 ```
