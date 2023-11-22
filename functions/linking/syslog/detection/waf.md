@@ -2,7 +2,7 @@
 
 ## 웹 메시지 템플릿 구조
 ```
-CEF:0|QubitSecurity|Plura|5|([[${eventName}]])[[${serviceName}]]|[[${filterName}]]|[[${filterRiskLevel}]]|end=[[${registerDate}]] cs1=[[${logQuery}]] cs2=[[${logUri}]] cs3=[[${logReferer}]] cs4=[[${logRequestBody}]] cs5=[[${filterCategoryName}]] Name=[[${filterName}]] request=[[${logUri}]] src=[[${detectIp}]] dvc=[[${serverIp}]] dst=[[${serverName}]] dhost=[[${logHost}]] requestMethod=[[${logMethod}]] requestCookies=[[${logCookie}]] requestClientApplication=[[${logUserAgent}]] categoryOutcome=[[${logStatus}]] requestContext=[[${logRequestContentType}]] sourceTranslatedAddress=[[${logXForwardedFor}]] [# th:if="${logBlocked == '1'}"]act=BLOCK[/][# th:if="${logBlocked == '0'}"]act=DETECT[/] in=[[${logRequestContentLength}]] out=[[${logResponseContentLength}]][# th:if="${isUseLogOrigin == '1'}"] cs6=[[${logOrigin}]][/]
+[[${serviceName}]] [[${eventName}]]\n[[${serviceName}]] | [[${serverIp}]] | [[${serverName}]] | [[${filterCategoryName}]] | [[${filterName}]] | [[${detectDescription}]][# th:if="${isUseLogOrigin == '1'}"] | [[${logOrigin}]][/]\n
 ```
 
 ## 웹방화벽 메시지 파라미터 정의
