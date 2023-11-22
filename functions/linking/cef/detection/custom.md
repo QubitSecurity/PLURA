@@ -1,14 +1,14 @@
-# 사용자 로그
+# 사용 로그
 
-## 사용자 메시지 템플릿 구조
+## 사용 메시지 템플릿 구조
 ```
 CEF:0|QubitSecurity|Plura|5|[[${eventType}]]|[[${eventName}]]|0|end=[[${registerDate}]] cs1=[[${userActionCategoryGroupName}]] cs2=[[${userActionCategoryGroupName}]]/[[${userActionCategoryName}]] cs5=[[${userName}]]
 ```
 
-## 사용자 메시지 파라미터 정의
+## 사용 메시지 파라미터 정의
 |필드명| 변 수 명                       |  내용                                   |
 |-----|----------------------------|----------------------------------------|
-|_HEADER_ |eventType                   |  |
+|_HEADER_ |eventType                   | 대상 서비스 타입 |
 |_HEADER_ |eventName                   | 대상 서비스 명 (사용로그)|
 |_HEADER_ |0                           | 고정|
 |end|registerDate                | 이벤트 발생시간|
