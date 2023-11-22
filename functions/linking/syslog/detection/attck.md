@@ -2,7 +2,7 @@
 
 ## 마이터 메시지 템플릿 구조
 ```
-CEF:0|QubitSecurity|Plura|5|([[${eventName}]])[[${serviceName}]]|[[${filterName}]]|[[${mitrePlatformName}]]|end=[[${registerDate}]] cs1=[[${filterName}]]([# th:if="${mitreTechniqueSubId == '-' or mitreTechniqueSubId == 'NONE'}"][[${mitreTechniqueId}]][/][# th:unless="${mitreTechniqueSubId == '-' or mitreTechniqueSubId == 'NONE'}"][[${mitreTechniqueId}]].[[${mitreTechniqueSubId}]][/]) cs2=[[${filterCategoryName}]] src=[[${detectIp}]] dvc=[[${serverIp}]] dst=[[${serverName}]][# th:if="${isUseLogOrigin == '1'}"] cs6=[[${logOrigin}]][/]
+[[${serviceName}]] [[${eventName}]]\n[[${serviceName}]] | [# th:if="${mitreTechniqueSubId == '-' or mitreTechniqueSubId == 'NONE'}"][[${mitreTechniqueId}]][/][# th:unless="${mitreTechniqueSubId == '-' or mitreTechniqueSubId == 'NONE'}"][[${mitreTechniqueId}]].[[${mitreTechniqueSubId}]][/] | [[${mitrePlatformName}]] | [[${mitreTacticsName}]] | [[${mitreTechniqueName}]][# th:if="${isUseLogOrigin == '1'}"] | [[${logOrigin}]][/]\n
 ```
 
 ## 마이터 메시지 파라미터 정의
