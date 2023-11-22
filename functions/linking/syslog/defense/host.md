@@ -1,16 +1,16 @@
-# 시스템 방어 로그
+# 호스트 방어 로그
 
-## 시스템 방어 메시지 템플릿 구조
+## 호스트 방어 메시지 템플릿 구조
 ```
 [[${serviceName}]] [[${eventName}]]\n[[${serviceName}]] | [[${serverIp}]] | [[${serverName}]] | [[${filterName}]] | [[${detectIp}]][# th:if="${isUseLogOrigin == '1'}"] | [[${logOrigin}]][/]\n
 ```
 
-## 시스템 메시지 파라미터 정의
+## 호스트 메시지 파라미터 정의
 |필드명| 변 수 명                       |  내용                                   |
 |-----|----------------------------|----------------------------------------|
-|_HEADER_ |serviceName                 | 대상 서비스 명 (시스템)|
+|_HEADER_ |serviceName                 | 대상 서비스 명 (호스트)|
 |_HEADER_ |eventName                   | 메시지 발생 구분 ( 탐지/방어/사용자로그 등)|
-|_HEADER_ |serviceName                 | 대상 서비스 명 (시스템)|
+|_HEADER_ |serviceName                 | 대상 서비스 명 (호스트)|
 |_HEADER_ |serverIp                    | 대상 시스템 아이피 (에이전트)|
 |_HEADER_ |serverName                  | 대상 시스템 이름 (에이전트)|
 |_HEADER_ |filterName                  | 필터 이름|
@@ -19,5 +19,5 @@
 
 ## 샘플로그
 ```
-Jun 16 12:44:15 211.43.190.184 plura.notice: CEF:0|QubitSecurity|Plura|5|(방어)시스템|로그인 성공-Harry-Syslog|4|end=Jun 16 2022 12:18:41 cs1=로그인 성공-Harry-Syslog cs2=로그온/로그오프 src=172.16.20.192 dvc=172.16.12.40 dst=Harry-LP-L cs6=Accepted password for root from 172.16.20.192 port 56019 ssh2
+Nov 22 06:12:53 www.plura.io Plura 호스트 방어\n호스트 | 172.16.12.41 | Harry-SP-L | QA-방어확인용-로그인성공-L | 172.16.20.190 | -\n
 ```

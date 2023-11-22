@@ -13,7 +13,7 @@ CEF:0|QubitSecurity|Plura|5|[[${eventType}]]|[[${eventName}]]|0|end=[[${register
 |_HEADER_ |0                           | 고정|
 |end|registerDate                | 이벤트 발생시간|
 |cs1|userActionCategoryGroupName | 사용로그 이벤트 카테고리 명 |
-|cs2|filterCategoryName          | 사용로그 이벤트 명     |
+|cs2|userActionCategoryName          | 사용로그 이벤트 명     |
 |cs5|userName                   | 사용자 명            |     
 
 

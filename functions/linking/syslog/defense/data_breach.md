@@ -19,5 +19,5 @@
 
 ## 샘플로그
 ```
-Jun 17 13:29:12 211.43.190.184 plura.notice: CEF:0|QubitSecurity|Plura|5|(방어)데이터유출|데이터유출 필터|-|end=Jun 17 2022 13:28:34 cs1=- cs2=- src=172.16.20.190 dvc=- dst=- cs6=-
+Nov 22 06:22:42 www.plura.io Plura 데이터 유출 방어\n데이터 유출 | 172.16.11.125 | QA-WAF-Stg | QA-데이터 정보 탈취-쿼리만 | 172.16.20.190 | -\n
 ```
