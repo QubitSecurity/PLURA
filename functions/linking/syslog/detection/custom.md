@@ -2,7 +2,7 @@
 
 ## 사용자 메시지 템플릿 구조
 ```
-CEF:0|QubitSecurity|Plura|5|[[${eventType}]]|[[${eventName}]]|0|end=[[${registerDate}]] cs1=[[${userActionCategoryGroupName}]] cs2=[[${userActionCategoryGroupName}]]/[[${userActionCategoryName}]] cs5=[[${userName}]]
+[[${serviceName}]] [[${eventName}]]\n[[${serviceName}]] | [[${serverIp}]] | [[${serverName}]] | [[${filterName}]] | [[${filterCategoryName}]][# th:if="${isUseLogOrigin == '1'}"] | [[${logOrigin}]][/]\n
 ```
 
 ## 사용자 메시지 파라미터 정의
