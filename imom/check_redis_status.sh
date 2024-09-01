@@ -40,14 +40,19 @@ check_redis_node() {
         role_type=$(echo "$redis_info" | awk '{print $3}' | cut -d',' -f2)
     fi
     
+    # Prepare the message
+    local message="CRITICAL: Node $node:$REDIS_PORT is expected to be $expected_role but found $role_type"
+
     if [ "$expected_role" == "master" ]; then
         if [ "$role_type" != "master" ]; then
-            logger -t $LOG_TAG -p local0.err "$TIMESTAMP | CRITICAL: Node $node:$REDIS_PORT is expected to be master but found $role_type"
+            logger -t $LOG_TAG -p local0.err "$message"
+            echo "$TIMESTAMP | $message" >> $LOG_FILE
             return 1
         fi
     elif [ "$expected_role" == "slave" ]; then
         if [ "$role_type" != "slave" ]; then
-            logger -t $LOG_TAG -p local0.err "$TIMESTAMP | CRITICAL: Node $node:$REDIS_PORT is expected to be slave but found $role_type"
+            logger -t $LOG_TAG -p local0.err "$message"
+            echo "$TIMESTAMP | $message" >> $LOG_FILE
             return 1
         fi
     fi
