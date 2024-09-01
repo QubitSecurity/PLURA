@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_TAG="plura_batch"
+LOG_TAG="mysql_check"
 TIMESTAMP=$(date "+%Y-%m-%d %H:%M:%S")
 HOSTNAME=$(hostname)
 
