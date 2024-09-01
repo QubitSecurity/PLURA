@@ -18,65 +18,128 @@ function test_mysql_connection {
     local host=$1
     local test_result=$(ssh $SSH_USER@$host "mysql -u $MYSQL_USER -p'$MYSQL_PASSWORD' -e 'SELECT 1;' 2>&1")
     if [[ "$test_result" == *"ERROR"* ]]; then
-        logger -t $LOG_TAG -p local0.err "$TIMESTAMP | ERROR: MySQL connection failed on $host - $test_result"
-        exit 1
+        local message="Status=ERROR, Host=$host, Message=MySQL connection failed - $test_result"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        return 1
     fi
+    return 0
 }
 
 # Function to check Master status
 function check_master_status {
     local host=$1
     local master_status=$(ssh $SSH_USER@$host "mysql -u $MYSQL_USER -p'$MYSQL_PASSWORD' -e 'SHOW MASTER STATUS\G'" 2>&1)
-    if [ -z "$master_status" ]; then
-        logger -t $LOG_TAG -p local0.err "$TIMESTAMP | ERROR: Failed to retrieve master status from MySQL on $host."
-        exit 1
+    
+    if [[ -z "$master_status" || "$master_status" == *"ERROR"* ]]; then
+        local message="Status=ERROR, Master=$host, Message=Failed to retrieve master status"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        return 1
     fi
+
     MASTER_LOG_FILE=$(echo "$master_status" | grep -w 'File:' | awk '{print $2}')
     MASTER_LOG_POS=$(echo "$master_status" | grep -w 'Position:' | awk '{print $2}')
+    
+    if [ -z "$MASTER_LOG_FILE" ] || [ -z "$MASTER_LOG_POS" ]; then
+        local message="Status=ERROR, Master=$host, Message=Invalid master status - File: $MASTER_LOG_FILE, Position: $MASTER_LOG_POS"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        return 1
+    fi
+
+    # 정상 상태 로그 기록
+    local message="Status=OK, Master=$host, Master_Log_File=$MASTER_LOG_FILE, Master_Log_Position=$MASTER_LOG_POS"
+    echo "$TIMESTAMP | $message" >> $LOG_FILE
+    return 0
 }
 
 # Function to check Slave status
 function check_slave_status {
     local host=$1
     local slave_status=$(ssh $SSH_USER@$host "mysql -u $MYSQL_USER -p'$MYSQL_PASSWORD' -e 'SHOW SLAVE STATUS\G'" 2>&1)
-    if [ -z "$slave_status" ]; then
-        logger -t $LOG_TAG -p local0.err "$TIMESTAMP | ERROR: Failed to retrieve slave status from MySQL on $host."
-        exit 1
+    
+    if [[ -z "$slave_status" || "$slave_status" == *"ERROR"* ]]; then
+        local message="Status=ERROR, Slave=$host, Message=Failed to retrieve slave status"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        return 1
     fi
-    SLAVE_MASTER_LOG_FILE=$(echo "$slave_status" | grep -w 'Master_Log_File:' | awk '{print $2}')
-    SLAVE_RELAY_LOG_FILE=$(echo "$slave_status" | grep -w 'Relay_Master_Log_File:' | awk '{print $2}')
-    SECS_BEHIND_MASTER=$(echo "$slave_status" | grep -w 'Seconds_Behind_Master:' | awk '{print $2}')
-    SLAVE_IO_RUNNING=$(echo "$slave_status" | grep -w 'Slave_IO_Running:' | awk '{print $2}')
-    SLAVE_SQL_RUNNING=$(echo "$slave_status" | grep -w 'Slave_SQL_Running:' | awk '{print $2}')
-}
 
-# Test MySQL connection to Master
-test_mysql_connection $MASTER_HOST
+    local SLAVE_MASTER_LOG_FILE=$(echo "$slave_status" | grep -w 'Master_Log_File:' | awk '{print $2}')
+    local SLAVE_RELAY_LOG_FILE=$(echo "$slave_status" | grep -w 'Relay_Master_Log_File:' | awk '{print $2}')
+    local SLAVE_READ_MASTER_LOG_POS=$(echo "$slave_status" | grep -w 'Read_Master_Log_Pos:' | awk '{print $2}')
+    local SLAVE_RELAY_LOG_POS=$(echo "$slave_status" | grep -w 'Exec_Master_Log_Pos:' | awk '{print $2}')
+    local SECS_BEHIND_MASTER=$(echo "$slave_status" | grep -w 'Seconds_Behind_Master:' | awk '{print $2}')
+    local SLAVE_IO_RUNNING=$(echo "$slave_status" | grep -w 'Slave_IO_Running:' | awk '{print $2}')
+    local SLAVE_SQL_RUNNING=$(echo "$slave_status" | grep -w 'Slave_SQL_Running:' | awk '{print $2}')
 
-# Check Master status
-check_master_status $MASTER_HOST
+    # Debugging output to verify the value of SECS_BEHIND_MASTER
+    # echo "Debug: Host=$host, Seconds_Behind_Master=$SECS_BEHIND_MASTER" >> $LOG_FILE
 
-# Loop through each Slave and check status
-for SLAVE_HOST in "${SLAVE_HOSTS[@]}"; do
-    # Test MySQL connection to Slave
-    test_mysql_connection $SLAVE_HOST
-
-    # Check Slave status
-    check_slave_status $SLAVE_HOST
-
-    # Handle NULL synchronization delay time
+    # Seconds_Behind_Master가 NULL인 경우 처리
     if [ -z "$SECS_BEHIND_MASTER" ]; then
         SECS_BEHIND_MASTER="NULL"
+    else
+        SECS_BEHIND_MASTER=$(expr $SECS_BEHIND_MASTER + 0)  # 숫자 비교를 위해 변환
     fi
 
-    # Handle cases where replication is not running
-    if [ "$SLAVE_IO_RUNNING" != "Yes" ] || [ "$SLAVE_SQL_RUNNING" != "Yes" ]; then
-        logger -t $LOG_TAG -p local0.err "$TIMESTAMP | ERROR: Slave IO or SQL process is not running on $SLAVE_HOST! Check replication status."
-        exit 2
+    # 상태 메시지 생성
+    local status="OK"
+    local message="Status=OK, Slave=$host, Master_Log_File=$MASTER_LOG_FILE, Master_Log_Position=$MASTER_LOG_POS, Slave_Master_Log_File=$SLAVE_MASTER_LOG_FILE, Slave_Read_Master_Log_Pos=$SLAVE_READ_MASTER_LOG_POS, Relay_Master_Log_File=$SLAVE_RELAY_LOG_FILE, Exec_Master_Log_Pos=$SLAVE_RELAY_LOG_POS, Seconds_Behind_Master=$SECS_BEHIND_MASTER, Slave_IO_Running=$SLAVE_IO_RUNNING, Slave_SQL_Running=$SLAVE_SQL_RUNNING"
+
+    # 복제 프로세스 상태 확인
+    if [ "$SLAVE_IO_RUNNING" != "Yes" ] || [ "$SLAVE_SQL_RUNNING" != "Yes" ] || [ "$SECS_BEHIND_MASTER" -ge 30 ]; then
+        status="ERROR"
+        echo "Debug: Status set to ERROR due to SECS_BEHIND_MASTER=$SECS_BEHIND_MASTER" >> $LOG_FILE
     fi
 
-    # Log the normal status to the specified log file
-    echo "$TIMESTAMP | Status=OK, Slave=$SLAVE_HOST, Master_Log_File=$MASTER_LOG_FILE, Master_Log_Position=$MASTER_LOG_POS, Slave_Master_Log_File=$SLAVE_MASTER_LOG_FILE, Relay_Log_File=$SLAVE_RELAY_LOG_FILE, Seconds_Behind_Master=$SECS_BEHIND_MASTER, Slave_IO_Running=$SLAVE_IO_RUNNING, Slave_SQL_Running=$SLAVE_SQL_RUNNING" >> $LOG_FILE
+    # 로그 파일 및 포지션 불일치 확인
+    if [ "$MASTER_LOG_FILE" != "$SLAVE_MASTER_LOG_FILE" ] || [ "$MASTER_LOG_POS" != "$SLAVE_READ_MASTER_LOG_POS" ]; then
+        status="ERROR"
+    fi
+
+    # 상태에 따라 로그 기록
+    if [ "$status" == "ERROR" ]; then
+        logger -t $LOG_TAG -p local0.err "$message"
+    fi
+    echo "$TIMESTAMP | $message" >> $LOG_FILE
+
+    # 상태 반환
+    if [ "$status" == "ERROR" ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+# Main execution
+
+overall_status=0
+
+# Test MySQL connection to Master and check its status
+test_mysql_connection $MASTER_HOST
+if [ $? -ne 0 ]; then
+    overall_status=1
+else
+    check_master_status $MASTER_HOST
+    if [ $? -ne 0 ]; then
+        overall_status=1
+    fi
+fi
+
+# Loop through each Slave and check its status
+for SLAVE_HOST in "${SLAVE_HOSTS[@]}"; do
+    test_mysql_connection $SLAVE_HOST
+    if [ $? -ne 0 ]; then
+        overall_status=1
+        continue
+    fi
+
+    check_slave_status $SLAVE_HOST
+    if [ $? -ne 0 ]; then
+        overall_status=1
+    fi
 done
 
-exit 0 # Exit with a success code
+exit $overall_status
