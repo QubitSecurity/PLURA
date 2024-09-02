@@ -16,7 +16,7 @@ KAFKA_BROKERS=(
 )
 
 # Define the base path for Kafka scripts
-KAFKA_SCRIPT_PATH="/usr/kafka/bin"
+KAFKA_SCRIPT_PATH="/home/sysadmin/kafka/bin"
 
 # Set the log file path for normal operation
 LOG_FILE="/var/log/plura/kafka_check_status.log"
@@ -32,6 +32,9 @@ CONSUMER_GROUP="analysis-weblog"
 offline_partitions_total=0
 partitions_without_leader_total=0
 lag_exceeded_total=0
+
+# Initialize status
+status_ok=true
 
 # Loop through each broker and perform checks
 for BROKER in "${KAFKA_BROKERS[@]}"; do
@@ -55,24 +58,35 @@ for BROKER in "${KAFKA_BROKERS[@]}"; do
     if [ "$current_lag" -gt "$LAG_THRESHOLD" ]; then
         lag_exceeded_total=$((lag_exceeded_total + 1))
     fi
+
+    # Check aggregated results and log them
+    if [ "$offline_partitions_total" -gt 0 ]; then
+        message="CRITICAL: Topic=$TOPIC, Offline_Partitions=$offline_partitions_total across brokers, Consumer_Group=$CONSUMER_GROUP"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        status_ok=false
+    fi
+
+    if [ "$partitions_without_leader_total" -gt 0 ]; then
+        message="CRITICAL: Topic=$TOPIC, Partitions_without_Leader=$partitions_without_leader_total across brokers, Consumer_Group=$CONSUMER_GROUP"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        status_ok=false
+    fi
+
+    if [ "$lag_exceeded_total" -gt 0 ]; then
+        message="CRITICAL: Topic=$TOPIC, Lag exceeded threshold on $lag_exceeded_total brokers, Threshold=$LAG_THRESHOLD, Consumer_Group=$CONSUMER_GROUP"
+        logger -t $LOG_TAG -p local0.err "$message"
+        echo "$TIMESTAMP | $message" >> $LOG_FILE
+        status_ok=false
+    fi
 done
 
-# Check aggregated results and log them
-if [ "$offline_partitions_total" -gt 0 ]; then
-    logger -t $LOG_TAG -p local0.err "$TIMESTAMP | CRITICAL: Topic=$TOPIC, Offline_Partitions=$offline_partitions_total across brokers, Consumer_Group=$CONSUMER_GROUP"
-    exit 2 # CRITICAL
-fi
-
-if [ "$partitions_without_leader_total" -gt 0 ]; then
-    logger -t $LOG_TAG -p local0.err "$TIMESTAMP | CRITICAL: Topic=$TOPIC, Partitions_without_Leader=$partitions_without_leader_total across brokers, Consumer_Group=$CONSUMER_GROUP"
-    exit 2 # CRITICAL
-fi
-
-if [ "$lag_exceeded_total" -gt 0 ]; then
-    logger -t $LOG_TAG -p local0.err "$TIMESTAMP | CRITICAL: Topic=$TOPIC, Lag exceeded threshold on $lag_exceeded_total brokers, Threshold=$LAG_THRESHOLD, Consumer_Group=$CONSUMER_GROUP"
-    exit 2 # CRITICAL
-fi
-
 # If all checks pass, log an OK status to the specified log file
-echo "$TIMESTAMP | Status=OK, Topic=$TOPIC, Lag=$current_lag, Threshold=$LAG_THRESHOLD, Offline_Partitions=$offline_partitions_total, Partitions_without_Leader=$partitions_without_leader_total, Kafka_Brokers=${#KAFKA_BROKERS[@]}" >> $LOG_FILE
-exit 0 # OK
+if $status_ok; then
+    message="Status=OK, Topic=$TOPIC, Lag=$current_lag, Threshold=$LAG_THRESHOLD, Offline_Partitions=$offline_partitions_total, Partitions_without_Leader=$partitions_without_leader_total, Kafka_Brokers=${#KAFKA_BROKERS[@]}"
+    echo "$TIMESTAMP | $message" >> $LOG_FILE
+    exit 0 # OK
+else
+    exit 2 # CRITICAL
+fi
