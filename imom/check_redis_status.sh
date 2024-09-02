@@ -24,7 +24,7 @@ REDIS_SLAVES=(
 )
 
 # Set the log file path for normal operation
-LOG_FILE="/var/log/plura/redis_check_status.log"
+LOG_FILE="/var/log/plura/check_status_redis.log"
 
 # Function to check the status of a Redis node
 check_redis_node() {
