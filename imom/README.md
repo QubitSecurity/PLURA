@@ -1,6 +1,6 @@
-## 1. iMom
+# 1. iMom
 
-### 1.0 MySQL
+## 1. MySQL
 
 이상 탐지 시 스크립트가 출력하는 로그는 `Status=ERROR`로 설정되며, 시스템 로그(`logger`)와 `LOG_FILE`에 기록됩니다. 예를 들어, `Seconds_Behind_Master`가 30초 이상인 경우, 또는 `Slave_IO_Running`이나 `Slave_SQL_Running`이 `Yes`가 아닌 경우의 로그 출력을 보여드리겠습니다.
 
