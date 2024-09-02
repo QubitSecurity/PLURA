@@ -8,7 +8,7 @@ SOLR_HOST="192.168.41.69"  # Enter the Solr server's IP address here
 SOLR_PORT="8983"           # Enter the Solr server's port number here
 
 # Set the log file path for normal operation
-LOG_FILE="/var/log/plura/solr_check_status.log"
+LOG_FILE="/var/log/plura/check_status_solr.log"
 
 # Construct the Solr CLUSTERSTATUS API URL (checking overall status without specifying core name)
 SOLR_URL="http://$SOLR_HOST:$SOLR_PORT/solr/admin/collections?action=CLUSTERSTATUS"
