@@ -16,7 +16,7 @@ KAFKA_BROKERS=(
 )
 
 # Define the base path for Kafka scripts
-KAFKA_SCRIPT_PATH="/home/sysadmin/kafka/bin"
+KAFKA_SCRIPT_PATH="/usr/kafka/bin"
 
 # Set the log file path for normal operation
 LOG_FILE="/var/log/plura/kafka_check_status.log"
