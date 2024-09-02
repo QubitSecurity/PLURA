@@ -60,8 +60,6 @@ Sep 02 08:40:15 mysql_check: Status=ERROR, Slave=10.100.21.234, Master_Log_File=
 
 ## 2. Redis
 
-수정된 Redis 점검 스크립트에서의 이상 탐지 조건과 그에 따른 예상 출력은 다음과 같습니다.
-
 ### 이상 탐지 조건
 
 1. **Redis 노드의 역할 불일치**:
@@ -128,8 +126,6 @@ Sep 02 08:46:10 redis_check: CRITICAL: Node 192.168.21.152:6381 is expected to b
 
 # 3. Solr
 
-아래는 Solr 점검 스크립트의 이상 탐지 시 로그 출력 예시와 시스템 로그(`logger`) 및 `LOG_FILE`에 기록되는 내용을 설명한 것입니다. MySQL 점검 스크립트의 양식을 따릅니다.
-
 ### 가정된 이상 상황 예시
 
 1. **`recovering` 상태의 코어가 있는 경우**: Solr의 특정 코어가 `recovering` 상태에 있는 경우.
@@ -179,8 +175,6 @@ Sep 02 09:40:15 solr_check: CRITICAL: 1 core(s) are in down state on Solr instan
 <hr/>
 
 ## 4. Kafka
-
-아래는 Kafka 점검 스크립트에 대한 설명입니다. MySQL 점검 스크립트의 설명 방식과 동일하게 적용되었습니다.
 
 ### 이상 탐지 시 스크립트가 출력하는 로그
 
