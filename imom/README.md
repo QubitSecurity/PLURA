@@ -1,4 +1,4 @@
-# 1. iMom
+# iMom
 
 ## 1. MySQL
 
