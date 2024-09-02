@@ -1,4 +1,12 @@
 # iMom
+Backing 시스템을 모니터링합니다.
+
+### 1. MySQL
+### 2. Redis
+### 3. Solr
+### 4. Kafka
+
+<hr/>
 
 ## 1. MySQL
 
@@ -115,5 +123,130 @@ Sep 02 08:46:10 redis_check: CRITICAL: Node 192.168.21.152:6381 is expected to b
 이상 탐지 조건이 충족되면, 해당 Redis 노드의 역할 불일치에 대해 `CRITICAL` 로그 메시지가 기록됩니다. 이 메시지는 `LOG_FILE`에 타임스탬프와 함께 기록되며, 시스템 로그에는 타임스탬프 없이 기록됩니다.
 
 이 스크립트를 통해 Redis 클러스터의 노드 역할을 정확하게 모니터링하고, 예상과 다른 역할을 수행하는 노드에 대해 즉시 경고를 받을 수 있습니다.
+
+<hr/>
+
+# 3. Solr
+
+아래는 Solr 점검 스크립트의 이상 탐지 시 로그 출력 예시와 시스템 로그(`logger`) 및 `LOG_FILE`에 기록되는 내용을 설명한 것입니다. MySQL 점검 스크립트의 양식을 따릅니다.
+
+### 가정된 이상 상황 예시
+
+1. **`recovering` 상태의 코어가 있는 경우**: Solr의 특정 코어가 `recovering` 상태에 있는 경우.
+2. **`down` 상태의 코어가 있는 경우**: Solr의 특정 코어가 `down` 상태에 있는 경우.
+
+### 이상 탐지 로그 출력 예시
+
+#### 1. **`recovering` 상태의 코어가 있는 경우**
+
+- **상황**: Solr 인스턴스에서 2개의 코어가 `recovering` 상태에 있음.
+
+**`LOG_FILE` 출력**:
+
+```bash
+2024-09-02 09:35:21 | CRITICAL: 2 core(s) are in recovering state on Solr instance 10.100.41.69:8983
+```
+
+**시스템 로그 (`logger`) 출력**:
+
+```bash
+Sep 02 09:35:21 solr_check: CRITICAL: 2 core(s) are in recovering state on Solr instance 10.100.41.69:8983
+```
+
+#### 2. **`down` 상태의 코어가 있는 경우**
+
+- **상황**: Solr 인스턴스에서 1개의 코어가 `down` 상태에 있음.
+
+**`LOG_FILE` 출력**:
+
+```bash
+2024-09-02 09:40:15 | CRITICAL: 1 core(s) are in down state on Solr instance 10.100.41.69:8983
+```
+
+**시스템 로그 (`logger`) 출력**:
+
+```bash
+Sep 02 09:40:15 solr_check: CRITICAL: 1 core(s) are in down state on Solr instance 10.100.41.69:8983
+```
+
+### 요약
+
+- **`LOG_FILE` 기록**: 모든 상태 정보가 기록되며, 정상 상태는 `Status=OK`로, 이상 상태는 `Status=ERROR`로 기록됩니다.
+- **시스템 로그 (`logger`) 기록**: `Status=ERROR`인 경우에만 시스템 로그에 기록됩니다.
+
+이 예시를 통해 Solr의 코어가 `recovering` 또는 `down` 상태에 있을 때, 스크립트가 적절하게 오류를 감지하고 로그에 기록함을 확인할 수 있습니다.
+
+<hr/>
+
+## 4. Kafka
+
+아래는 Kafka 점검 스크립트에 대한 설명입니다. MySQL 점검 스크립트의 설명 방식과 동일하게 적용되었습니다.
+
+### 이상 탐지 시 스크립트가 출력하는 로그
+
+이 스크립트는 Kafka 클러스터의 상태를 점검하며, 이상 탐지 시 `Status=ERROR`로 설정된 로그를 시스템 로그(`logger`)와 `LOG_FILE`에 기록합니다. 예를 들어, Kafka 클러스터의 오프라인 파티션이 있는 경우, 리더가 없는 파티션이 있는 경우, 또는 소비자의 Lag가 임계값을 초과한 경우의 로그 출력을 보여드리겠습니다.
+
+### 가정된 이상 상황 예시
+
+1. **오프라인 파티션이 있는 경우**: Kafka 클러스터에서 오프라인 파티션이 발생한 경우.
+2. **리더가 없는 파티션이 있는 경우**: Kafka 클러스터에서 리더가 없는 파티션이 발생한 경우.
+3. **Lag가 임계값을 초과한 경우**: Kafka 클러스터에서 소비자의 Lag가 임계값(예: 10000)을 초과한 경우.
+
+### 이상 탐지 로그 출력 예시
+
+#### 1. **오프라인 파티션이 있는 경우**
+
+- **상황**: Kafka 클러스터에서 3개의 오프라인 파티션이 발생한 경우.
+
+**`LOG_FILE` 출력**:
+
+```bash
+2024-09-02 08:35:21 | CRITICAL: Topic=web, Offline_Partitions=3 across brokers, Consumer_Group=analysis-weblog
+```
+
+**시스템 로그 (`logger`) 출력**:
+
+```bash
+Sep 02 08:35:21 kafka_check: CRITICAL: Topic=web, Offline_Partitions=3 across brokers, Consumer_Group=analysis-weblog
+```
+
+#### 2. **리더가 없는 파티션이 있는 경우**
+
+- **상황**: Kafka 클러스터에서 2개의 리더가 없는 파티션이 발생한 경우.
+
+**`LOG_FILE` 출력**:
+
+```bash
+2024-09-02 08:40:15 | CRITICAL: Topic=web, Partitions_without_Leader=2 across brokers, Consumer_Group=analysis-weblog
+```
+
+**시스템 로그 (`logger`) 출력**:
+
+```bash
+Sep 02 08:40:15 kafka_check: CRITICAL: Topic=web, Partitions_without_Leader=2 across brokers, Consumer_Group=analysis-weblog
+```
+
+#### 3. **Lag가 임계값을 초과한 경우**
+
+- **상황**: Kafka 클러스터에서 소비자의 Lag가 임계값(예: 10000)을 초과한 경우.
+
+**`LOG_FILE` 출력**:
+
+```bash
+2024-09-02 08:45:30 | CRITICAL: Topic=web, Lag exceeded threshold on 1 brokers, Threshold=10000, Consumer_Group=analysis-weblog
+```
+
+**시스템 로그 (`logger`) 출력**:
+
+```bash
+Sep 02 08:45:30 kafka_check: CRITICAL: Topic=web, Lag exceeded threshold on 1 brokers, Threshold=10000, Consumer_Group=analysis-weblog
+```
+
+### 요약
+
+- **`LOG_FILE` 기록**: 모든 상태 정보가 기록되며, 정상 상태는 `Status=OK`로, 이상 상태는 `Status=ERROR`로 기록됩니다.
+- **시스템 로그 (`logger`) 기록**: `Status=ERROR`인 경우에만 시스템 로그에 기록됩니다.
+
+이 예시를 통해 Kafka 클러스터에서 오프라인 파티션이 있거나, 리더가 없는 파티션이 발생하거나, 소비자의 Lag가 임계값을 초과할 때 스크립트가 적절하게 오류를 감지하고 로그에 기록함을 확인할 수 있습니다.
 
 <hr/>
