@@ -11,7 +11,7 @@ MYSQL_USER="root"
 MYSQL_PASSWORD="password"
 
 # Set the log file path for normal operation
-LOG_FILE="/var/log/plura/mysql_replication_check.log"
+LOG_FILE="/var/log/plura/replication_check_mysql.log"
 
 # Function to test MySQL connection
 function test_mysql_connection {
