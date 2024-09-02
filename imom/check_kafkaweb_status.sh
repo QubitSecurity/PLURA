@@ -19,7 +19,7 @@ KAFKA_BROKERS=(
 KAFKA_SCRIPT_PATH="/usr/kafka/bin"
 
 # Set the log file path for normal operation
-LOG_FILE="/var/log/plura/kafka_check_status.log"
+LOG_FILE="/var/log/plura/check_status_kafka.log"
 
 # Define the lag threshold (in number of messages)
 LAG_THRESHOLD=10000  # Set your threshold value here
