@@ -1,10 +1,10 @@
 # iMom
 Backing 시스템을 모니터링합니다.
 
-### 1. MySQL
-### 2. Redis
-### 3. Solr
-### 4. Kafka
+#### 1. MySQL
+#### 2. Redis
+#### 3. Solr
+#### 4. Kafka
 
 <hr/>
 
