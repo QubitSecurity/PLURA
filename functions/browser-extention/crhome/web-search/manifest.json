@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "VirusTotal Search",
+  "version": "1.0",
+  "description": "우클릭 메뉴에서 선택한 텍스트를 VirusTotal에서 검색합니다.",
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
