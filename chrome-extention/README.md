@@ -13,32 +13,7 @@
 
 ---
 
-## 2️⃣ **바이러스토탈 API 연동 (선택)**
-현재는 바이러스토탈의 웹 인터페이스를 여는 방식이지만, API를 사용해 더 정교한 기능을 만들 수 있습니다.
-
-**파일 해시 기반 검색 API 사용 예제 (Node.js)**
-```javascript
-const axios = require("axios");
-
-async function searchVirusTotal(hash) {
-    const API_KEY = "YOUR_VIRUSTOTAL_API_KEY";
-    const url = `https://www.virustotal.com/api/v3/files/${hash}`;
-
-    try {
-        const response = await axios.get(url, {
-            headers: { "x-apikey": API_KEY }
-        });
-        console.log(response.data);
-    } catch (error) {
-        console.error("Error:", error.response.data);
-    }
-}
-
-// 사용 예시
-searchVirusTotal("44d88612fe7fc47a3933a703301b8ab6"); // 샘플 해시값
-```
-
-## 3️⃣ **Chrome 확장 프로그램 기본 구성**
+## 2️⃣ **Chrome 확장 프로그램 기본 구성**
 확장 프로그램을 만들기 위해 다음 3가지 파일을 준비합니다.
 
 - `manifest.json` (확장 프로그램 정보)
@@ -75,6 +50,33 @@ searchVirusTotal("44d88612fe7fc47a3933a703301b8ab6"); // 샘플 해시값
 > **설명**
 > - `"permissions"`: `contextMenus`를 사용하여 우클릭 메뉴를 추가할 수 있도록 설정
 > - `"background"`: 백그라운드 스크립트 실행 (우클릭 감지)
+
+---
+
+## 3️⃣ **바이러스토탈 API 연동 (선택)**
+현재는 바이러스토탈의 웹 인터페이스를 여는 방식이지만, API를 사용해 더 정교한 기능을 만들 수 있습니다.
+
+**파일 해시 기반 검색 API 사용 예제 (Node.js)**
+```javascript
+const axios = require("axios");
+
+async function searchVirusTotal(hash) {
+    const API_KEY = "YOUR_VIRUSTOTAL_API_KEY";
+    const url = `https://www.virustotal.com/api/v3/files/${hash}`;
+
+    try {
+        const response = await axios.get(url, {
+            headers: { "x-apikey": API_KEY }
+        });
+        console.log(response.data);
+    } catch (error) {
+        console.error("Error:", error.response.data);
+    }
+}
+
+// 사용 예시
+searchVirusTotal("44d88612fe7fc47a3933a703301b8ab6"); // 샘플 해시값
+```
 
 ---
 
