@@ -54,35 +54,6 @@
 > - `"permissions"`: `contextMenus`를 사용하여 우클릭 메뉴를 추가할 수 있도록 설정
 > - `"background"`: 백그라운드 스크립트 실행 (우클릭 감지)
 
----
-
-## 3️⃣ **바이러스토탈 API 연동 (선택)**
-현재는 바이러스토탈의 웹 인터페이스를 여는 방식이지만, API를 사용해 더 정교한 기능을 만들 수 있습니다.
-
-**파일 해시 기반 검색 API 사용 예제 (Node.js)**
-```javascript
-const axios = require("axios");
-
-async function searchVirusTotal(hash) {
-    const API_KEY = "YOUR_VIRUSTOTAL_API_KEY";
-    const url = `https://www.virustotal.com/api/v3/files/${hash}`;
-
-    try {
-        const response = await axios.get(url, {
-            headers: { "x-apikey": API_KEY }
-        });
-        console.log(response.data);
-    } catch (error) {
-        console.error("Error:", error.response.data);
-    }
-}
-
-// 사용 예시
-searchVirusTotal("44d88612fe7fc47a3933a703301b8ab6"); // 샘플 해시값
-```
-
----
-
 ### 📌 **2. `background.js` (우클릭 메뉴 추가)**
 이제 `background.js` 파일을 만들어 우클릭 메뉴에서 VirusTotal 검색을 추가합니다.
 
@@ -117,6 +88,33 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 ---
 
 이 방식을 활용하면, 우클릭한 실행 파일의 해시 값을 계산한 후 **바이러스토탈 API로 직접 검색**할 수도 있습니다.
+
+---
+
+## 3️⃣ **바이러스토탈 API 연동 (선택)**
+현재는 바이러스토탈의 웹 인터페이스를 여는 방식이지만, API를 사용해 더 정교한 기능을 만들 수 있습니다.
+
+**파일 해시 기반 검색 API 사용 예제 (Node.js)**
+```javascript
+const axios = require("axios");
+
+async function searchVirusTotal(hash) {
+    const API_KEY = "YOUR_VIRUSTOTAL_API_KEY";
+    const url = `https://www.virustotal.com/api/v3/files/${hash}`;
+
+    try {
+        const response = await axios.get(url, {
+            headers: { "x-apikey": API_KEY }
+        });
+        console.log(response.data);
+    } catch (error) {
+        console.error("Error:", error.response.data);
+    }
+}
+
+// 사용 예시
+searchVirusTotal("44d88612fe7fc47a3933a703301b8ab6"); // 샘플 해시값
+```
 
 ---
 
