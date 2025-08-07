@@ -29,7 +29,7 @@
 | 월 \$100 이하 소규모 로그 분석  | **Gemini 1.5 Pro**  | 가장 저렴한 단가와 많은 로그 처리량 가능                                   |
 | 정밀한 보안 분석 / GPT 연동 필요 | **GPT‑4.1** 또는 mini | 로그 필터링, 정책 분석 등 고정밀 추론이 필요한 경우 안정적                        |
 | 초고용량 로그, 수백 페이지 컨텍스트  | **Gemini 1.5 Pro**  | 100만 글자 지원으로 월간/일간 로그 전체 투입도 가능                           |
-| 클라우드 통합/플랫폼 의존 고려     | 상황별 선택              | OpenAI: Microsoft 계열에 적합, Gemini: Google Cloud Stack과 친화적 |
+| 클라우드 통합/플랫폼 의존 고려     | 상황별 선택              | OpenAI: Microsoft 계열에 적합 <br> Gemini: Google Cloud Stack과 친화적 |
 
 ---
 
